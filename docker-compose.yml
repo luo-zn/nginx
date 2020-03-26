@@ -1,0 +1,28 @@
+version: '3.7'
+
+networks:  
+  ngNet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 60.1.0.0/16
+
+services:
+  nginx:
+    image: nginx:1.17.9
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - /data/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /data/nginx/conf.d:/etc/nginx/conf.d
+      - /data/nginx/static:/data/static
+      - /data/nginx/log:/data/log
+      - /data/nginx/alpine-repo:/data/alpine-repo
+    networks:
+      ngNet:
+        ipv4_address: 60.1.1.0
+    ports:
+      - "80:80"
+      - "443:443"
+    deploy:
+      restart_policy:
+        condition: on-failure
